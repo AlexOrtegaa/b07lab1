@@ -140,6 +140,20 @@ public class Polynomial {
 		return false;
 	}
 	
+	public Polynomial repeated (Polynomial poly) {
+		for (int i = 0; i < poly.coefficients.length; i++) {
+			for (int j = i + 1; j < poly.coefficients.length; ++j) {
+				if (poly.exponents[i] == poly.exponents[j]) {
+					poly.coefficients[i] += poly.coefficients[j];
+					poly.coefficients[j] = 0;
+				}
+			}
+		}
+		
+		return poly;
+		
+	}
+	
 	public Polynomial add (Polynomial poly) {
 		if (poly.coefficients == null && this.coefficients != null) {
 			Polynomial new_poly = new Polynomial(this.coefficients, this.exponents);
@@ -185,19 +199,7 @@ public class Polynomial {
 		return res_poly;
 	}
 	
-	public Polynomial repeated (Polynomial poly) {
-		for (int i = 0; i < poly.coefficients.length; i++) {
-			for (int j = i + 1; j < poly.coefficients.length; ++j) {
-				if (poly.exponents[i] == poly.exponents[j]) {
-					poly.coefficients[i] += poly.coefficients[j];
-					poly.coefficients[j] = 0;
-				}
-			}
-		}
-		
-		return poly;
-		
-	}
+	
 	
 	public Polynomial multiply (Polynomial poly) {
 		if (poly.coefficients == null || this.coefficients == null) {
