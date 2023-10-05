@@ -63,9 +63,11 @@ public class Polynomial {
 	}
 	
 	public void saveToFile(String inputFile) throws FileNotFoundException {
-		PrintStream ps = new PrintStream(inputFile);
+		File file = new File(inputFile); 
+		PrintStream ps = new PrintStream(file);
 		
 		if (this.coefficients != null && this.exponents != null) {
+			
 			for (int i = 0; i < this.coefficients.length; i++) {
 				ps.print(this.coefficients[i]);
 				if (this.exponents[i] != 0) {
@@ -153,22 +155,31 @@ public class Polynomial {
 			Polynomial new_poly = new Polynomial();
 			return new_poly;
 		}
+		double [] coe_size = new double[poly.coefficients.length + this.coefficients.length];
+		int [] exp_size = new int[poly.exponents.length + this.exponents.length];
 		
+		Polynomial new_poly = new Polynomial(coe_size, exp_size);
 		
-		Polynomial new_poly = new Polynomial();
-		if (poly.coefficients.length > this.coefficients.length) {
-			new_poly = new Polynomial(poly.coefficients, poly.exponents);
-		} else {
-			new_poly = new Polynomial(this.coefficients, this.exponents);
+		for (int i = 0; i < poly.coefficients.length; ++i) {
+			new_poly.coefficients[i] =poly.coefficients[i];
+			new_poly.exponents[i] =poly.exponents[i];
+			
+		}
+		for (int i = 0; i < this.coefficients.length; ++i) {
+			new_poly.coefficients[poly.coefficients.length + i] =poly.coefficients[i];
+			new_poly.exponents[poly.coefficients.length + i] =poly.exponents[i];
+			
 		}
 		
-				
-		for (int i = 0; i < Math.min(poly.coefficients.length, this.coefficients.length); i++) {
-			new_poly.coefficients[i] = this.coefficients[i] + poly.coefficients[i];
-		}
+		
+		new_poly = repeated(new_poly);
+		
+		new_poly = reduced(new_poly);
+		
 		
 		Polynomial res_poly = new Polynomial();
-		res_poly = reduced(new_poly);
+		res_poly = new_poly;
+		
 		
 		
 		return res_poly;
@@ -189,26 +200,29 @@ public class Polynomial {
 	}
 	
 	public Polynomial multiply (Polynomial poly) {
-		if (poly.coefficients == null || this.coefficients != null) {
+		if (poly.coefficients == null || this.coefficients == null) {
 			Polynomial new_poly = new Polynomial();
 			return new_poly;
 		}
-		
 		
 		Polynomial new_poly = new Polynomial();
 		double [] coe_size = new double[poly.coefficients.length * this.coefficients.length];
 		int [] exp_size = new int[poly.exponents.length * this.exponents.length];
 		new_poly = new Polynomial(coe_size, exp_size);
-		
+		int z =0;
 		for (int i = 0; i < poly.coefficients.length; i++) {
 			for (int j = 0; j < this.coefficients.length; j++) {
-				new_poly.coefficients[i] = this.coefficients[i] * poly.coefficients[j];
-				new_poly.exponents[i] = this.exponents[i] + poly.exponents[j];
+				new_poly.coefficients[z] = this.coefficients[i] * poly.coefficients[j];
+				new_poly.exponents[z] = this.exponents[i] + poly.exponents[j];
+				z++;
+				
 			}
 			
 		}
 		
+		
 		Polynomial res_poly = new Polynomial();
+		
 		new_poly = repeated(new_poly);
 		res_poly = reduced(new_poly);
 		
